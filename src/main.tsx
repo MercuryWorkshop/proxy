@@ -58,7 +58,7 @@ function App(this: {
     <h1>Percury Unblocker</h1>
     surf the unblocked and mostly buggy web
     {use(this.active, enabled => enabled &&
-      <input bind:value={use(this.url)} on:keydown={e => e.keyCode == 13 && console.log(this.urlencoded = "/uvsw/" + Ultraviolet.codec.xor.encode(this.url))} />
+      <input bind:value={use(this.url)} on:keyup={e => e.keyCode == 13 && console.log(this.urlencoded = "/uvsw/" + Ultraviolet.codec.xor.encode(this.url))} />
       || "libcurl.js loading..."
     )
     }
@@ -69,9 +69,15 @@ function App(this: {
 
 document.addEventListener("libcurl_load", () => {
   console.log("libcurl.js ready!");
-  let bcctls = new TLSClient(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/wsproxy");
-  setBareClientImplementation(bcctls);
-  app.active = true;
+  
 });
 
-document.querySelector("#app")?.appendChild(<App />)
+(async ()=>{
+  document.querySelector("#app")?.appendChild(<App />)
+  let root = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host;
+  let bcctls = new TLSClient({mux:root+"/mux"});
+  window.b = bcctls;
+  setBareClientImplementation(bcctls);
+  app.active = true;
+})();
+window.t = TLSClient;
