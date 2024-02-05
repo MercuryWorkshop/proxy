@@ -75,7 +75,7 @@ document.addEventListener("libcurl_load", () => {
 (async ()=>{
   document.querySelector("#app")?.appendChild(<App />)
   let root = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host;
-  let bcctls = new TLSClient({mux:root+"/mux"});
+  let bcctls = new TLSClient({wsproxy: "wss://wisp.mercurywork.shop/"});
   //@ts-ignore
   window.b = bcctls;
   setBareClientImplementation(bcctls);
