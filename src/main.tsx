@@ -18,7 +18,6 @@ function App(this: {
 }) {
   app = this;
   this.active = false;
-
   this.url = "https://google.com"
   this.urlencoded = "";
   let css = styled.new`
@@ -60,8 +59,7 @@ function App(this: {
     surf the unblocked and mostly buggy web
     {use(this.active, enabled => enabled &&
     //@ts-ignore
-      <input bind:value={use(this.url)} on:keyup={e => e.keyCode == 13 && console.log(this.urlencoded = "/uvsw/" + Ultraviolet.codec.xor.encode(this.url))} />
-      || "libcurl.js loading..."
+      <input bind:value={use(this.url)} on:input={(e) => (this.url = e.target.value)} on:keyup={e => e.keyCode == 13 && console.log(this.urlencoded = "/uvsw/" + Ultraviolet.codec.xor.encode(this.url))} />
     )
     }
     <iframe src={use(this.urlencoded)}></iframe>
