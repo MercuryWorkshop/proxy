@@ -14,7 +14,14 @@
   },
   "dependencies": {
     "@mercuryworkshop/alicejs": "^1.1.3",
-    "@mercuryworkshop/bare-client-custom": "2.2.0-alpha",
-    "bcc-tls": "link:/home/ce/Documents/GitHub/bcc-tls/"
-  }
+    "@mercuryworkshop/bare-client-custom": "^3.1.0",
+    "bcc-tls": "file:bcc-tls"
+  },
+	"exports": {
+		"import": "./dist/main.js",
+		"require": "./dist/main.cjs"
+	},
+	"browser": "dist/main.cjs",
+	"main": "dist/main.cjs",
+	"module": "dist/main.js"
 }

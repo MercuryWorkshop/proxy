@@ -1,5 +1,6 @@
 import { registerRemoteListener, setBareClientImplementation } from "@mercuryworkshop/bare-client-custom";
-import { TLSClient } from "bcc-tls";
+//@ts-ignore
+import { TLSClient } from "../node_modules/bcc-tls/dist/index.mjs";
 import "../node_modules/@mercuryworkshop/alicejs/AliceJS.js";
 import "./index.css";
 
@@ -58,6 +59,7 @@ function App(this: {
     <h1>Percury Unblocker</h1>
     surf the unblocked and mostly buggy web
     {use(this.active, enabled => enabled &&
+    //@ts-ignore
       <input bind:value={use(this.url)} on:keyup={e => e.keyCode == 13 && console.log(this.urlencoded = "/uvsw/" + Ultraviolet.codec.xor.encode(this.url))} />
       || "libcurl.js loading..."
     )
@@ -76,8 +78,11 @@ document.addEventListener("libcurl_load", () => {
   document.querySelector("#app")?.appendChild(<App />)
   let root = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host;
   let bcctls = new TLSClient({mux:root+"/mux"});
+  //@ts-ignore
   window.b = bcctls;
   setBareClientImplementation(bcctls);
+  //@ts-ignore
   app.active = true;
 })();
+//@ts-ignore
 window.t = TLSClient;
