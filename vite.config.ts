@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import crossOriginIsolation from 'vite-plugin-cross-origin-isolation'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -17,5 +18,8 @@ export default defineConfig({
         ws: true,
       },
     },
-  }
+  },
+  plugins: [
+    // crossOriginIsolation()
+  ]
 })

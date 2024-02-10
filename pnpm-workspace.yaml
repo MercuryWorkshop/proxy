@@ -1,2 +1,7 @@
 packages:
   - 'bcc-tls'
+  - 'bcc-tls/wstcp'
+  - 'bare-mux'
+  - 'Ultraviolet'
+  - 'bare-as-module'
+  - 'bare-as-module3'

@@ -1,3 +1,15 @@
 [submodule "bcc-tls"]
 	path = bcc-tls
 	url = https://github.com/MercuryWorkshop/bcc-tls
+[submodule "Ultraviolet"]
+	path = Ultraviolet
+	url = https://github.com/NebulaServices/Ultraviolet
+[submodule "bare-mux"]
+	path = bare-mux
+	url = https://github.com/MercuryWorkshop/bare-mux
+[submodule "bare-as-module3"]
+	path = bare-as-module3
+	url = https://github.com/MercuryWorkshop/bare-as-module3
+[submodule "bare-as-module"]
+	path = bare-as-module
+	url = https://github.com/MercuryWorkshop/bare-as-module

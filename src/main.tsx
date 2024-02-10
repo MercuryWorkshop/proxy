@@ -58,7 +58,7 @@ function App(this: {
     <h1>Percury Unblocker</h1>
     surf the unblocked and mostly buggy web
     {use(this.active, enabled => enabled &&
-    //@ts-ignore
+      //@ts-ignore
       <input bind:value={use(this.url)} on:input={(e) => (this.url = e.target.value)} on:keyup={e => e.keyCode == 13 && console.log(this.urlencoded = "/uvsw/" + Ultraviolet.codec.xor.encode(this.url))} />
     )
     }
@@ -69,13 +69,13 @@ function App(this: {
 
 document.addEventListener("libcurl_load", () => {
   console.log("libcurl.js ready!");
-  
+
 });
 
-(async ()=>{
+(async () => {
   document.querySelector("#app")?.appendChild(<App />)
   let root = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host;
-  let bcctls = new TLSClient({wsproxy: "wss://wisp.mercurywork.shop/"});
+  let bcctls = new TLSClient({ mux: "ws://localhost:6001" });
   //@ts-ignore
   window.b = bcctls;
   setBareClientImplementation(bcctls);
