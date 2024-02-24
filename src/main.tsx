@@ -1,12 +1,10 @@
-import { registerRemoteListener, setBareClientImplementation } from "@mercuryworkshop/bare-client-custom";
+import { SetTransport } from "@mercuryworkshop/bare-mux";
 //@ts-ignore
-import { TLSClient } from "../node_modules/bcc-tls/dist/index.mjs";
 import "../node_modules/@mercuryworkshop/alicejs/AliceJS.js";
 import "./index.css";
 
 
 navigator.serviceWorker.register("/sw.js");
-registerRemoteListener();
 
 
 let app: ThisParameterType<typeof App>;
@@ -69,18 +67,18 @@ function App(this: {
 
 document.addEventListener("libcurl_load", () => {
   console.log("libcurl.js ready!");
-
 });
 
 (async () => {
   document.querySelector("#app")?.appendChild(<App />)
-  let root = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host;
-  let bcctls = new TLSClient({ mux: "ws://localhost:6001" });
-  //@ts-ignore
-  window.b = bcctls;
-  setBareClientImplementation(bcctls);
+  // SetTransport("BareMod.BareClient", "http://localhost:8080/bare/");
+  SetTransport("BareTLS.TLSClient", { mux: "wss://wisp.mercurywork.shop/" });
+
+  // let root = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host;
+  // let bcctls = new TLSClient({ mux: "ws://localhost:6001" });
+  // //@ts-ignore
+  // window.b = bcctls;
+  // setBareClientImplementation(bcctls);
   //@ts-ignore
   app.active = true;
 })();
-//@ts-ignore
-window.t = TLSClient;

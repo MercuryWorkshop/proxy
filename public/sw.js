@@ -7,9 +7,14 @@
  */
 
 self.filemap = {};
+importScripts('uv/bare.js');
+importScripts('uv/baremod.js');
+importScripts('uv/baremod2.js');
 importScripts('uv/uv.bundle.js');
-importScripts('uv/uv.config.js');
+importScripts('/uv.config.js');
 importScripts(__uv$config.sw || 'uv/uv.sw.js');
+
+
 
 const sw = new UVServiceWorker();
 
@@ -18,7 +23,6 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
         (async function() {
             let url = new URL(event.request.url).pathname;
-            console.log(url);
             if (filemap[url]) {
 
                 let contenttype = "text/plain";
@@ -37,8 +41,6 @@ self.addEventListener('fetch', (event) => {
                     }
                 });
             } else {
-                console.log("Test");
-
                 if (event.request.url.startsWith(location.origin + "/uvsw/")) {
                     return await sw.fetch(event);
                 }
