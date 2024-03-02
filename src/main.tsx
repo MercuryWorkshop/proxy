@@ -9,16 +9,16 @@ navigator.serviceWorker.register("/sw.js");
 
 let app: ThisParameterType<typeof App>;
 
-function App(this: {
+const App: Component<{}, {
   url: string
   urlencoded: string,
   active: boolean,
-}) {
+}> = function() {
   app = this;
   this.active = false;
   this.url = "https://google.com"
   this.urlencoded = "";
-  let css = styled.new`
+  this.css = css`
     self {
       width: 100%;
       height:100%;
@@ -52,7 +52,7 @@ function App(this: {
       background-color: #eb6f92;
     }
 `;
-  return <div css={css}>
+  return <div>
     <h1>Percury Unblocker</h1>
     surf the unblocked and mostly buggy web
     {use(this.active, enabled => enabled &&
