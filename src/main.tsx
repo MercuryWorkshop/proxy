@@ -1,4 +1,4 @@
-import { SetTransport } from "@mercuryworkshop/bare-mux";
+import BareClient, { SetTransport } from "@mercuryworkshop/bare-mux";
 //@ts-ignore
 import "../node_modules/@mercuryworkshop/alicejs/AliceJS.js";
 import "./index.css";
@@ -72,7 +72,7 @@ document.addEventListener("libcurl_load", () => {
 (async () => {
   document.querySelector("#app")?.appendChild(<App />)
   // SetTransport("BareMod.BareClient", "http://localhost:8080/bare/");
-  SetTransport("BareTLS.TLSClient", { mux: "wss://wisp.mercurywork.shop/" });
+  SetTransport("BareTLS.TLSClient", { wisp: "wss://wisp.mercurywork.shop/", type: "epoxy" });
 
   // let root = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host;
   // let bcctls = new TLSClient({ mux: "ws://localhost:6001" });
@@ -82,3 +82,5 @@ document.addEventListener("libcurl_load", () => {
   //@ts-ignore
   app.active = true;
 })();
+window.b = BareClient;
+window.a = () => SetTransport("BareTLS.TLSClient", { wsproxy: "wss://wisp.mercurywork.shop/" });;

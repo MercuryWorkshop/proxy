@@ -492,7 +492,9 @@
 	            // });
 	            onopen(message.protocol);
 	            // TODO
-	            ws.addEventListener("message", onmessage);
+	            ws.addEventListener("message", (ev) => {
+	                onmessage(ev.data);
+	            });
 	        };
 	        ws.addEventListener('close', closeListener);
 	        ws.addEventListener('message', messageListener);
