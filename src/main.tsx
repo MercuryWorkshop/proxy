@@ -1,6 +1,6 @@
 import BareClient, { SetSingletonTransport, SetTransport, registerRemoteListener } from "@mercuryworkshop/bare-mux";
 //@ts-ignore
-import "../node_modules/@mercuryworkshop/alicejs/AliceJS.js";
+import "dreamland";
 import "./index.css";
 
 
