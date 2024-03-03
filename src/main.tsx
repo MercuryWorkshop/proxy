@@ -9,6 +9,10 @@ navigator.serviceWorker.register("/sw.js");
 
 let app: ThisParameterType<typeof App>;
 
+const flex = rule`display: flex;`;
+const col = rule`flex-direction: column;`;
+
+
 const App: Component<{}, {
   url: string
   wispurl: string
@@ -53,21 +57,37 @@ const App: Component<{}, {
       border-radius: 5px;
       background-color: #eb6f92;
     }
+    .cfg * {
+      margin: 2px;
+    }
+    .buttons button {
+      border: 4px solid #11528f;
+      background-color: #eb6f92;
+      color: #191724;
+    }
+    .cfg input {
+      border: 3px solid #3d84a8;
+      background-color: #eb6f92;
+      outline: none;
+    }
 `;
   return <div>
     <h1>Percury Unblocker</h1>
     surf the unblocked and mostly buggy web
-    <div>
-      <input class="bar" bind:value={use(this.url)} on:input={(e: any) => (this.url = e.target.value)} on:keyup={(e: any) => e.keyCode == 13 && console.log(this.urlencoded = "/uvsw/" + Ultraviolet.codec.xor.encode(this.url))} />
+
+    <div class={[flex, col, "cfg"]}>
       <input bind:value={use(this.wispurl)} />
       <input bind:value={use(this.bareurl)} />
 
 
-      <button on:click={() => SetTransport("BareMod.BareClient", this.bareurl)}>use bare server 3</button>
-      <button on:click={() => SetSingletonTransport(new CurlMod.LibcurlClient({ wisp: this.wispurl }))}>use libcurl.js (remote)</button>
-      <button on:click={() => SetTransport("EpxMod.EpoxyClient", { wisp: this.wispurl })}>use epoxy</button>
-      <button on:click={() => SetSingletonTransport(new BareMod.BareClient(this.bareurl))}>use bare server 3 (remote)</button>
+      <div class={[flex, "buttons"]}>
+        <button on:click={() => SetTransport("BareMod.BareClient", this.bareurl)}>use bare server 3</button>
+        <button on:click={() => SetSingletonTransport(new CurlMod.LibcurlClient({ wisp: this.wispurl }))}>use libcurl.js (remote)</button>
+        <button on:click={() => SetTransport("EpxMod.EpoxyClient", { wisp: this.wispurl })}>use epoxy</button>
+        <button on:click={() => SetSingletonTransport(new BareMod.BareClient(this.bareurl))}>use bare server 3 (remote)</button>
+      </div>
     </div>
+    <input class="bar" bind:value={use(this.url)} on:input={(e: any) => (this.url = e.target.value)} on:keyup={(e: any) => e.keyCode == 13 && console.log(this.urlencoded = "/uvsw/" + Ultraviolet.codec.xor.encode(this.url))} />
     <iframe src={use(this.urlencoded)}></iframe>
   </div>
 }
