@@ -1,6 +1,6 @@
-[submodule "bcc-tls"]
-	path = bcc-tls
-	url = https://github.com/MercuryWorkshop/bcc-tls
+[submodule "EpoxyTransport"]
+	path = EpoxyTransport
+	url = https://github.com/MercuryWorkshop/EpoxyTransport
 [submodule "Ultraviolet"]
 	path = Ultraviolet
 	url = https://github.com/NebulaServices/Ultraviolet
@@ -13,3 +13,6 @@
 [submodule "bare-as-module"]
 	path = bare-as-module
 	url = https://github.com/MercuryWorkshop/bare-as-module
+[submodule "CurlTransport"]
+	path = CurlTransport
+	url = https://github.com/MercuryWorkshop/CurlTransport

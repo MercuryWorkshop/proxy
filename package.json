@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@mercuryworkshop/bare-mux": "workspace:*",
-    "@mercuryworkshop/bcc-tls": "workspace:*",
     "dreamland": "^0.0.1"
   },
   "exports": {

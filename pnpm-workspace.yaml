@@ -1,6 +1,6 @@
 packages:
-  - 'bcc-tls'
-  - 'bcc-tls/wstcp'
+  - 'CurlTransport'
+  - 'EpoxyTransport'
   - 'bare-mux'
   - 'Ultraviolet'
   - 'bare-as-module'

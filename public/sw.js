@@ -8,8 +8,12 @@
 
 self.filemap = {};
 importScripts('uv/bare.js');
+
+// import modules
 importScripts('uv/baremod.js');
-importScripts('uv/baremod2.js');
+importScripts('uv/epxmod.js');
+importScripts('uv/curlmod.js');
+
 importScripts('uv/uv.bundle.js');
 importScripts('/uv.config.js');
 importScripts(__uv$config.sw || 'uv/uv.sw.js');
@@ -19,50 +23,12 @@ importScripts(__uv$config.sw || 'uv/uv.sw.js');
 const sw = new UVServiceWorker();
 
 self.addEventListener('fetch', (event) => {
-
     event.respondWith(
         (async function() {
-            let url = new URL(event.request.url).pathname;
-            if (filemap[url]) {
-
-                let contenttype = "text/plain";
-
-                if (url.includes(".js"))
-                    contenttype = "application/javascript";
-                else if (url.includes(".html"))
-                    contenttype = "text/html";
-                else if (url.includes(".css"))
-                    contenttype = "text/css";
-
-
-                return new Response(filemap[url], {
-                    headers: {
-                        "content-type": contenttype
-                    }
-                });
-            } else {
-                if (event.request.url.startsWith(location.origin + "/uvsw/")) {
-                    return await sw.fetch(event);
-                }
-
-
-                return await fetch(event.request)
+            if (event.request.url.startsWith(location.origin + "/uvsw/")) {
+                return await sw.fetch(event);
             }
+            return await fetch(event.request)
         })()
     );
-    //
 });
-
-// self.addEventListener('fetch',
-//     event => {
-//         event.respondWith(
-//             (async function() {
-//                 if (await dynamic.route(event)) {
-//                     return await dynamic.fetch(event);
-//                 }
-
-//                 return await fetch(event.request);
-//             })()
-//         );
-//     }
-// );

@@ -11,9 +11,6 @@ importers:
       '@mercuryworkshop/bare-mux':
         specifier: workspace:*
         version: link:bare-mux
-      '@mercuryworkshop/bcc-tls':
-        specifier: workspace:*
-        version: link:bcc-tls
       dreamland:
         specifier: ^0.0.1
         version: 0.0.1
@@ -27,6 +24,62 @@ importers:
       vite-plugin-cross-origin-isolation:
         specifier: ^0.1.6
         version: 0.1.6
+
+  CurlTransport:
+    dependencies:
+      esbuild-plugin-umd-wrapper:
+        specifier: ^2.0.0
+        version: 2.0.0
+      libcurl.js:
+        specifier: ^0.3.8
+        version: 0.3.8
+      rollup:
+        specifier: ^4.12.0
+        version: 4.12.0
+      rollup-plugin-node-resolve:
+        specifier: ^5.2.0
+        version: 5.2.0(rollup@4.12.0)
+      rollup-plugin-typescript2:
+        specifier: ^0.36.0
+        version: 0.36.0(rollup@4.12.0)(typescript@5.3.3)
+      ws:
+        specifier: 8.16.0
+        version: 8.16.0
+    devDependencies:
+      esbuild:
+        specifier: ^0.19.11
+        version: 0.19.12
+      esbuild-plugin-d.ts:
+        specifier: ^1.2.2
+        version: 1.2.3(typescript@5.3.3)
+
+  EpoxyTransport:
+    dependencies:
+      '@mercuryworkshop/epoxy-tls':
+        specifier: ^1.1.1
+        version: 1.1.1
+      esbuild-plugin-umd-wrapper:
+        specifier: ^2.0.0
+        version: 2.0.0
+      rollup:
+        specifier: ^4.12.0
+        version: 4.12.0
+      rollup-plugin-node-resolve:
+        specifier: ^5.2.0
+        version: 5.2.0(rollup@4.12.0)
+      rollup-plugin-typescript2:
+        specifier: ^0.36.0
+        version: 0.36.0(rollup@4.12.0)(typescript@5.3.3)
+      ws:
+        specifier: 8.16.0
+        version: 8.16.0
+    devDependencies:
+      esbuild:
+        specifier: ^0.19.11
+        version: 0.19.12
+      esbuild-plugin-d.ts:
+        specifier: ^1.2.2
+        version: 1.2.3(typescript@5.3.3)
 
   Ultraviolet:
     dependencies:
@@ -100,6 +153,9 @@ importers:
       '@ianvs/prettier-plugin-sort-imports':
         specifier: ^3.4.2
         version: 3.7.2(prettier@2.8.8)
+      '@mercuryworkshop/bare-mux':
+        specifier: 'workspace: *'
+        version: link:../bare-mux
       '@rollup/plugin-inject':
         specifier: ^4.0.4
         version: 4.0.4(rollup@2.79.1)
@@ -179,40 +235,6 @@ importers:
       rollup-plugin-typescript2:
         specifier: ^0.36.0
         version: 0.36.0(rollup@4.9.6)(typescript@5.3.3)
-
-  bcc-tls:
-    dependencies:
-      '@mercuryworkshop/bare-mux':
-        specifier: workspace:*
-        version: link:../bare-mux
-      '@mercuryworkshop/epoxy-tls':
-        specifier: link:../../epoxy-tls/client
-        version: link:../../epoxy-tls/client
-      esbuild-plugin-umd-wrapper:
-        specifier: ^2.0.0
-        version: 2.0.0
-      libcurl.js:
-        specifier: ^0.3.8
-        version: 0.3.8
-      rollup:
-        specifier: ^4.12.0
-        version: 4.12.0
-      rollup-plugin-node-resolve:
-        specifier: ^5.2.0
-        version: 5.2.0(rollup@4.12.0)
-      rollup-plugin-typescript2:
-        specifier: ^0.36.0
-        version: 0.36.0(rollup@4.12.0)(typescript@5.3.3)
-      ws:
-        specifier: 8.16.0
-        version: 8.16.0
-    devDependencies:
-      esbuild:
-        specifier: ^0.19.11
-        version: 0.19.12
-      esbuild-plugin-d.ts:
-        specifier: ^1.2.2
-        version: 1.2.3(typescript@5.3.3)
 
 packages:
 
@@ -736,6 +758,10 @@ packages:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
+
+  /@mercuryworkshop/epoxy-tls@1.1.1:
+    resolution: {integrity: sha512-C+LnrgMmNkRxIbQUYKb8G6PapZF5MAgJdTyPluef6BFz+B7A2rvzWV7aO1f5IU3HSZJ6GlBBWuGxs5CkJVTvaQ==}
+    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
