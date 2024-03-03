@@ -186,13 +186,13 @@ importers:
         specifier: workspace:*
         version: link:../bare-mux
       '@mercuryworkshop/epoxy-tls':
-        specifier: workspace:*
-        version: link:wstcp
+        specifier: link:../../epoxy-tls/client
+        version: link:../../epoxy-tls/client
       esbuild-plugin-umd-wrapper:
         specifier: ^2.0.0
         version: 2.0.0
       libcurl.js:
-        specifier: ^0.3.3
+        specifier: ^0.3.8
         version: 0.3.8
       rollup:
         specifier: ^4.12.0
@@ -213,8 +213,6 @@ importers:
       esbuild-plugin-d.ts:
         specifier: ^1.2.2
         version: 1.2.3(typescript@5.3.3)
-
-  bcc-tls/wstcp: {}
 
 packages:
 

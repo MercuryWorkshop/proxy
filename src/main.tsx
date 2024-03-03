@@ -1,4 +1,4 @@
-import BareClient, { SetSingletonTransport, SetTransport, registerRemoteListener } from "@mercuryworkshop/bare-mux";
+import { SetTransport } from "@mercuryworkshop/bare-mux";
 //@ts-ignore
 import "dreamland";
 import "./index.css";
@@ -72,10 +72,10 @@ document.addEventListener("libcurl_load", () => {
 declare var BareMod: any;
 (async () => {
   document.querySelector("#app")?.appendChild(<App />)
-  SetSingletonTransport(new BareMod.BareClient("http://localhost:8080/bare/"));
-  registerRemoteListener(navigator.serviceWorker.controller!);
+  // SetSingletonTransport(new BareMod.BareClient("http://localhost:8080/bare/"));
+  // registerRemoteListener(navigator.serviceWorker.controller!);
   // SetTransport("BareMod.BareClient", "http://localhost:8080/bare/");
-  // SetTransport("BareTLS.TLSClient", { wisp: "wss://wisp.mercurywork.shop/", type: "epoxy" });
+  SetTransport("BareTLS.TLSClient", { wisp: "ws://localhost:4000/", type: "epoxy" });
 
   // let root = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host;
   // let bcctls = new TLSClient({ mux: "ws://localhost:6001" });
