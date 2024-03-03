@@ -1,4 +1,4 @@
-import { SetTransport } from "@mercuryworkshop/bare-mux";
+import BareClient, { SetTransport } from "@mercuryworkshop/bare-mux";
 //@ts-ignore
 import "dreamland";
 import "./index.css";
@@ -75,7 +75,7 @@ declare var BareMod: any;
   // SetSingletonTransport(new BareMod.BareClient("http://localhost:8080/bare/"));
   // registerRemoteListener(navigator.serviceWorker.controller!);
   // SetTransport("BareMod.BareClient", "http://localhost:8080/bare/");
-  SetTransport("BareTLS.TLSClient", { wisp: "ws://localhost:4000/", type: "epoxy" });
+  SetTransport("BareTLS.TLSClient", { wisp: "ws://localhost:6001/", type: "epoxy" });
 
   // let root = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host;
   // let bcctls = new TLSClient({ mux: "ws://localhost:6001" });
@@ -86,3 +86,4 @@ declare var BareMod: any;
   app.active = true;
 })();
 
+window.b = BareClient
