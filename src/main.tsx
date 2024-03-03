@@ -12,17 +12,16 @@ let app: ThisParameterType<typeof App>;
 const flex = rule`display: flex;`;
 const col = rule`flex-direction: column;`;
 
-
+const store = $store({
+  url: "https://google.com",
+  wispurl: "wss://wisp.mercurywork.shop/",
+  bareurl: "http://localhost:8080/bare/"
+}, "settings", "localstorage");
 const App: Component<{}, {
-  url: string
-  wispurl: string
-  bareurl: string
+
   urlencoded: string,
 }> = function() {
   app = this;
-  this.url = "https://google.com"
-  this.bareurl = "http://localhost:8080/bare/"
-  this.wispurl = "wss://wisp.mercurywork.shop/"
   this.urlencoded = "";
   this.css = css`
     self {
@@ -76,18 +75,18 @@ const App: Component<{}, {
     surf the unblocked and mostly buggy web
 
     <div class={[flex, col, "cfg"]}>
-      <input bind:value={use(this.wispurl)} />
-      <input bind:value={use(this.bareurl)} />
+      <input bind:value={use(store.wispurl)} />
+      <input bind:value={use(store.bareurl)} />
 
 
       <div class={[flex, "buttons"]}>
-        <button on:click={() => SetTransport("BareMod.BareClient", this.bareurl)}>use bare server 3</button>
-        <button on:click={() => SetSingletonTransport(new CurlMod.LibcurlClient({ wisp: this.wispurl }))}>use libcurl.js (remote)</button>
-        <button on:click={() => SetTransport("EpxMod.EpoxyClient", { wisp: this.wispurl })}>use epoxy</button>
-        <button on:click={() => SetSingletonTransport(new BareMod.BareClient(this.bareurl))}>use bare server 3 (remote)</button>
+        <button on:click={() => SetTransport("BareMod.BareClient", store.bareurl)}>use bare server 3</button>
+        <button on:click={() => SetSingletonTransport(new CurlMod.LibcurlClient({ wisp: store.wispurl }))}>use libcurl.js (remote)</button>
+        <button on:click={() => SetTransport("EpxMod.EpoxyClient", { wisp: store.wispurl })}>use epoxy</button>
+        <button on:click={() => SetSingletonTransport(new BareMod.BareClient(store.bareurl))}>use bare server 3 (remote)</button>
       </div>
     </div>
-    <input class="bar" bind:value={use(this.url)} on:input={(e: any) => (this.url = e.target.value)} on:keyup={(e: any) => e.keyCode == 13 && console.log(this.urlencoded = "/uvsw/" + Ultraviolet.codec.xor.encode(this.url))} />
+    <input class="bar" bind:value={use(store.url)} on:input={(e: any) => (store.url = e.target.value)} on:keyup={(e: any) => e.keyCode == 13 && console.log(this.urlencoded = "/uvsw/" + Ultraviolet.codec.xor.encode(store.url))} />
     <iframe src={use(this.urlencoded)}></iframe>
   </div>
 }
