@@ -8,8 +8,9 @@ pnpm run dev
 
 ## Actually changing anything
 ```
-cd bcc-tls
+cd EpoxyTransport
 pnpm build
-cp -r dist/bare.cjs ../public/baremod2.js
+cp -r dist/bare.cjs ../public/uv/epxmod.js
 cd ..
 ```
+same for curl
