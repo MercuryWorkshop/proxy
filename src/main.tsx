@@ -11,12 +11,14 @@ let app: ThisParameterType<typeof App>;
 
 const App: Component<{}, {
   url: string
+  wispurl: string
+  bareurl: string
   urlencoded: string,
-  active: boolean,
 }> = function() {
   app = this;
-  this.active = false;
   this.url = "https://google.com"
+  this.bareurl = "http://localhost:8080/bare/"
+  this.wispurl = "wss://wisp.mercurywork.shop/"
   this.urlencoded = "";
   this.css = css`
     self {
@@ -41,7 +43,7 @@ const App: Component<{}, {
       height: calc(100% - 8em);
     }
 
-    input {
+    input.bar {
       border: none;
       outline: none;
       color: #191724;
@@ -55,37 +57,30 @@ const App: Component<{}, {
   return <div>
     <h1>Percury Unblocker</h1>
     surf the unblocked and mostly buggy web
-    {use(this.active, enabled => enabled &&
-      //@ts-ignore
-      <input bind:value={use(this.url)} on:input={(e) => (this.url = e.target.value)} on:keyup={e => e.keyCode == 13 && console.log(this.urlencoded = "/uvsw/" + Ultraviolet.codec.xor.encode(this.url))} />
-    )
-    }
+    <div>
+      <input class="bar" bind:value={use(this.url)} on:input={(e: any) => (this.url = e.target.value)} on:keyup={(e: any) => e.keyCode == 13 && console.log(this.urlencoded = "/uvsw/" + Ultraviolet.codec.xor.encode(this.url))} />
+      <input bind:value={use(this.wispurl)} />
+      <input bind:value={use(this.bareurl)} />
+
+
+      <button on:click={() => SetTransport("BareMod.BareClient", this.bareurl)}>use bare server 3</button>
+      <button on:click={() => SetSingletonTransport(new CurlMod.LibcurlClient({ wisp: this.wispurl }))}>use libcurl.js (remote)</button>
+      <button on:click={() => SetTransport("EpxMod.EpoxyClient", { wisp: this.wispurl })}>use epoxy</button>
+      <button on:click={() => SetSingletonTransport(new BareMod.BareClient(this.bareurl))}>use bare server 3 (remote)</button>
+    </div>
     <iframe src={use(this.urlencoded)}></iframe>
   </div>
 }
 
 
-document.addEventListener("libcurl_load", () => {
-  console.log("libcurl.js ready!");
-});
-
 declare var CurlMod: any;
-(async () => {
-  document.querySelector("#app")?.appendChild(<App />)
-  // SetSingletonTransport(new BareMod.BareClient("http://localhost:8080/bare/"));
-  // SetTransport("BareMod.BareClient", "http://localhost:8080/bare/");
-  // SetTransport("EpxMod.EpoxyClient", { wisp: "ws://localhost:6001/" });
-  // SetTransport("CurlMod.LibcurlClient", { wisp: "ws://localhost:6001/" });
-  SetSingletonTransport(new CurlMod.LibcurlClient({ wisp: "ws://localhost:6001/" }));
-  registerRemoteListener(navigator.serviceWorker.controller!);
+declare var EpxMod: any;
+declare var BareMod: any;
+declare var Ultraviolet: any;
 
-  // let root = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host;
-  // let bcctls = new TLSClient({ mux: "ws://localhost:6001" });
-  // //@ts-ignore
-  // window.b = bcctls;
-  // setBareClientImplementation(bcctls);
-  //@ts-ignore
-  app.active = true;
+(async () => {
+  registerRemoteListener(navigator.serviceWorker.controller!);
+  document.querySelector("#app")?.appendChild(<App />)
 })();
 
-window.b = BareClient
+(window as any).b = BareClient
