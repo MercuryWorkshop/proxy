@@ -37,7 +37,7 @@ __export(main_exports, {
 });
 module.exports = __toCommonJS(main_exports);
 
-// ../node_modules/.pnpm/libcurl.js@0.3.8/node_modules/libcurl.js/libcurl.mjs
+// ../node_modules/.pnpm/libcurl.js@0.3.9/node_modules/libcurl.js/libcurl.mjs
 var libcurl = function() {
   var Module = typeof Module != "undefined" ? Module : {};
   var moduleOverrides = Object.assign({}, Module);
@@ -5728,7 +5728,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
   var active_requests = 0;
   var wasm_ready = false;
   var version_dict = null;
-  const libcurl_version = "0.3.8";
+  var api = null;
+  const libcurl_version = "0.3.9";
   function check_loaded(check_websocket) {
     if (!wasm_ready) {
       throw new Error("wasm not loaded yet, please call libcurl.load_wasm first");
@@ -5922,7 +5923,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
   }
   function set_websocket_url(url) {
     websocket_url = url;
-    if (!Module.websocket) {
+    if (!Module.websocket && ENVIRONMENT_IS_WEB) {
       document.addEventListener("libcurl_load", () => {
         set_websocket_url(url);
       });
@@ -5945,8 +5946,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
     wasm_ready = true;
     _init_curl();
     set_websocket_url(websocket_url);
-    let load_event = new Event("libcurl_load");
-    document.dispatchEvent(load_event);
+    if (ENVIRONMENT_IS_WEB) {
+      let load_event = new Event("libcurl_load");
+      document.dispatchEvent(load_event);
+    }
+    api.onload();
   }
   function load_wasm(url) {
     wasmBinaryFile = url;
@@ -5954,7 +5958,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
     run();
   }
   Module.onRuntimeInitialized = main;
-  return {
+  api = {
     fetch: libcurl_fetch,
     set_websocket: set_websocket_url,
     load_wasm,
@@ -5981,8 +5985,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
     },
     set stderr(callback) {
       err = callback;
+    },
+    onload() {
     }
   };
+  return api;
 }();
 
 // src/main.ts
@@ -5990,13 +5997,16 @@ var LibcurlClient = class {
   wisp;
   constructor({ wisp }) {
     this.wisp = wisp;
+    libcurl.load_wasm("libcurl.wasm");
+    libcurl.onload = () => {
+      libcurl.set_websocket(wisp);
+      this.ready = true;
+    };
+  }
+  async init() {
+    this.ready = false;
   }
   ready = false;
-  async init() {
-    libcurl.load_wasm("libcurl.wasm");
-    libcurl.set_websocket(this.wisp);
-    this.ready = true;
-  }
   async meta() {
   }
   async request(remote, method, body, headers, signal) {
