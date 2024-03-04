@@ -6029,11 +6029,17 @@ var LibcurlClient = class {
   }
   connect(url, origin, protocols, requestHeaders, onopen, onmessage, onclose, onerror) {
     let socket = new libcurl.WebSocket(url.toString(), protocols);
-    socket.onopen = onopen;
-    socket.onclose = onclose;
-    socket.onerror = onerror;
+    socket.onopen = (event) => {
+      onopen("");
+    };
+    socket.onclose = (event) => {
+      onclose(event.code, event.reason);
+    };
+    socket.onerror = (event) => {
+      onerror("");
+    };
     socket.onmessage = (event) => {
-      console.log(event);
+      onmessage(event.data);
     };
     return (data) => {
       socket.send(data);
