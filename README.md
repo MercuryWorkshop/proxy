@@ -10,7 +10,7 @@ pnpm run dev
 ```
 cd EpoxyTransport
 pnpm build
-cp -r dist/bare.cjs ../public/uv/epxmod.js
+cp -r dist/index.cjs ../public/uv/epxmod.js
 cd ..
 ```
 same for curl
