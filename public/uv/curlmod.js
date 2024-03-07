@@ -37,7 +37,7 @@ __export(main_exports, {
 });
 module.exports = __toCommonJS(main_exports);
 
-// ../node_modules/.pnpm/libcurl.js@0.3.8/node_modules/libcurl.js/libcurl.mjs
+// ../node_modules/.pnpm/libcurl.js@0.4.1/node_modules/libcurl.js/libcurl.mjs
 var libcurl = function() {
   var Module = typeof Module != "undefined" ? Module : {};
   var moduleOverrides = Object.assign({}, Module);
@@ -2862,7 +2862,15 @@ var libcurl = function() {
         {
           WebSocketConstructor = WebSocket;
         }
-        ws = new WispWebSocket(url, opts);
+        ws = new ((() => {
+          if (api.transport === "wisp") {
+            return WispWebSocket;
+          } else if (api.transport === "wsproxy") {
+            return WebSocket;
+          } else {
+            return api.transport;
+          }
+        })())(url, opts);
         ws.binaryType = "arraybuffer";
       } catch (e) {
         throw new FS.ErrnoError(23);
@@ -4730,12 +4738,16 @@ var libcurl = function() {
   var _active_requests = Module["_active_requests"] = createExportWrapper("active_requests");
   var _tick_request = Module["_tick_request"] = createExportWrapper("tick_request");
   var _start_request = Module["_start_request"] = createExportWrapper("start_request");
+  var _get_cacert = Module["_get_cacert"] = createExportWrapper("get_cacert");
   var _init_curl = Module["_init_curl"] = createExportWrapper("init_curl");
+  var _recv_from_socket = Module["_recv_from_socket"] = createExportWrapper("recv_from_socket");
+  var _send_to_socket = Module["_send_to_socket"] = createExportWrapper("send_to_socket");
   var _get_version = Module["_get_version"] = createExportWrapper("get_version");
+  var _get_error_str = Module["_get_error_str"] = createExportWrapper("get_error_str");
   var _recv_from_websocket = Module["_recv_from_websocket"] = createExportWrapper("recv_from_websocket");
   var _send_to_websocket = Module["_send_to_websocket"] = createExportWrapper("send_to_websocket");
   var _close_websocket = Module["_close_websocket"] = createExportWrapper("close_websocket");
-  var _cleanup_websocket = Module["_cleanup_websocket"] = createExportWrapper("cleanup_websocket");
+  var _cleanup_handle = Module["_cleanup_handle"] = createExportWrapper("cleanup_handle");
   var _get_result_size = Module["_get_result_size"] = createExportWrapper("get_result_size");
   var _get_result_buffer = Module["_get_result_buffer"] = createExportWrapper("get_result_buffer");
   var _get_result_code = Module["_get_result_code"] = createExportWrapper("get_result_code");
@@ -5175,33 +5187,92 @@ var libcurl = function() {
   }
   if (isDataURI(wasmBinaryFile))
     run();
-  const copyright_notice = `ading2210/libcurl.js - A port of libcurl to WASM for use in the browser.
-Copyright (C) 2023 ading2210
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
-  class CurlWebSocket extends EventTarget {
-    constructor(url, protocols = [], websocket_debug = false) {
-      super();
-      check_loaded(true);
-      if (!url.startsWith("wss://") && !url.startsWith("ws://")) {
-        throw new SyntaxError("invalid url");
+  function logger(type, text) {
+    if (type === "log")
+      console.log(text);
+    else if (type === "warn")
+      console.warn(text);
+    else if (type === "error")
+      console.error(text);
+  }
+  function log_msg(text) {
+    logger("log", text);
+  }
+  function warn_msg(text) {
+    logger("warn", text);
+  }
+  function error_msg(text) {
+    logger("error", text);
+  }
+  class HeadersDict {
+    constructor(obj) {
+      for (let key in obj) {
+        this[key] = obj[key];
       }
+      return new Proxy(this, this);
+    }
+    get(target, prop) {
+      let keys = Object.keys(this);
+      for (let key of keys) {
+        if (key.toLowerCase() === prop.toLowerCase()) {
+          return this[key];
+        }
+      }
+    }
+    set(target, prop, value) {
+      let keys = Object.keys(this);
+      for (let key of keys) {
+        if (key.toLowerCase() === prop.toLowerCase()) {
+          this[key] = value;
+        }
+      }
+      this[prop] = value;
+      return true;
+    }
+  }
+  function allocate_str(str) {
+    return allocate(intArrayFromString(str), ALLOC_NORMAL);
+  }
+  function allocate_array(array) {
+    return allocate(array, ALLOC_NORMAL);
+  }
+  function get_error_str(error_code) {
+    let error_ptr = _get_error_str(error_code);
+    return UTF8ToString(error_ptr);
+  }
+  async function data_to_array(data) {
+    let data_array = null;
+    if (typeof data === "string") {
+      data_array = new TextEncoder().encode(data);
+    } else if (data instanceof Blob) {
+      let array_buffer = await data.arrayBuffer();
+      data_array = new Uint8Array(array_buffer);
+    } else if (data instanceof ArrayBuffer) {
+      if (ArrayBuffer.isView(data) && data instanceof DataView) {
+        data_array = new Uint8Array(data.buffer);
+      } else if (ArrayBuffer.isView(data)) {
+        data_array = Uint8Array.from(data);
+      } else {
+        data_array = new Uint8Array(data);
+      }
+    } else if (data instanceof ReadableStream) {
+      let chunks = [];
+      for await (let chunk of data) {
+        chunks.push(chunk);
+      }
+      data_array = merge_arrays(chunks);
+    } else {
+      throw "invalid data type to be sent";
+    }
+    return data_array;
+  }
+  class FakeWebSocket extends EventTarget {
+    constructor(url, protocols = [], options = {}) {
+      super();
       this.url = url;
       this.protocols = protocols;
+      this.options = options;
       this.binaryType = "blob";
-      this.recv_buffer = [];
-      this.websocket_debug = websocket_debug;
       this.onopen = () => {
       };
       this.onerror = () => {
@@ -5214,36 +5285,145 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
       this.OPEN = 1;
       this.CLOSING = 2;
       this.CLOSED = 3;
+      this.status = this.CONNECTING;
+      this.socket = null;
       this.connect();
     }
     connect() {
-      this.status = this.CONNECTING;
+      this.socket = new CurlWebSocket(this.url, this.protocols, this.options);
+      this.socket.onopen = () => {
+        this.status = this.OPEN;
+        let open_event = new Event("open");
+        this.onopen(open_event);
+        this.dispatchEvent(open_event);
+      };
+      this.socket.onclose = () => {
+        this.status = this.CLOSED;
+        let close_event = new CloseEvent("close");
+        this.dispatchEvent(close_event);
+        this.onclose(close_event);
+      };
+      this.socket.onerror = (error) => {
+        this.status = this.CLOSED;
+        error_msg(`websocket ${this.url} encountered an error (${error})`);
+        let error_event = new Event("error");
+        this.dispatchEvent(error_event);
+        this.onerror(error_event);
+      };
+      this.socket.onmessage = (data) => {
+        let converted;
+        if (typeof data === "string") {
+          converted = data;
+        } else {
+          if (this.binaryType == "blob") {
+            converted = new Blob(data);
+          } else if (this.binaryType == "arraybuffer") {
+            converted = data.buffer;
+          } else {
+            throw "invalid binaryType string";
+          }
+        }
+        let msg_event = new MessageEvent("message", { data: converted });
+        this.onmessage(msg_event);
+        this.dispatchEvent(msg_event);
+      };
+    }
+    send(data) {
+      let is_text = typeof data === "string";
+      if (this.status === this.CONNECTING) {
+        throw new DOMException("websocket not ready yet");
+      }
+      if (this.status === this.CLOSED) {
+        return;
+      }
+      (async () => {
+        if (is_text) {
+          this.socket.send(data);
+        } else {
+          let data_array = await data_to_array(data);
+          this.send(data_array);
+        }
+      })();
+    }
+    close() {
+      this.status = this.CLOSING;
+      this.socket.close();
+    }
+    get readyState() {
+      return this.status;
+    }
+    get bufferedAmount() {
+      return 0;
+    }
+    get protocol() {
+      return this.protocols[0] || "";
+    }
+    get extensions() {
+      return "";
+    }
+  }
+  class CurlWebSocket {
+    constructor(url, protocols = [], options = {}) {
+      check_loaded(true);
+      if (!url.startsWith("wss://") && !url.startsWith("ws://")) {
+        throw new SyntaxError("invalid url");
+      }
+      this.url = url;
+      this.protocols = protocols;
+      this.options = options;
+      this.onopen = () => {
+      };
+      this.onerror = () => {
+      };
+      this.onmessage = () => {
+      };
+      this.onclose = () => {
+      };
+      this.connected = false;
+      this.event_loop = null;
+      this.recv_buffer = [];
+      this.connect();
+    }
+    connect() {
       let data_callback = () => {
       };
       let finish_callback = (error, response_info) => {
-        this.finish_callback(error, response_info);
+        if (error === 0) {
+          this.connected = true;
+          this.event_loop = setInterval(() => {
+            let data = this.recv();
+            if (data !== null)
+              this.onmessage(data);
+          }, 0);
+          this.onopen();
+        } else {
+          this.cleanup(error);
+        }
       };
-      let options = {};
+      let request_options = {
+        headers: this.options.headers || {}
+      };
       if (this.protocols) {
-        options.headers = {
-          "Sec-Websocket-Protocol": this.protocols.join(", ")
-        };
+        request_options.headers["Sec-Websocket-Protocol"] = this.protocols.join(", ");
       }
-      if (this.websocket_debug) {
-        options._libcurl_verbose = 1;
+      if (this.options.verbose) {
+        request_options._libcurl_verbose = 1;
       }
-      this.http_handle = perform_request(this.url, options, data_callback, finish_callback, null);
-      this.recv_loop();
+      this.http_handle = perform_request(this.url, request_options, data_callback, finish_callback, null);
     }
     recv() {
       let buffer_size = 64 * 1024;
       let result_ptr = _recv_from_websocket(this.http_handle, buffer_size);
       let data_ptr = _get_result_buffer(result_ptr);
       let result_code = _get_result_code(result_ptr);
-      if (result_code == 0) {
+      let result_closed = _get_result_closed(result_ptr);
+      let returned_data = null;
+      if (result_code === 0 && !result_closed) {
         if (_get_result_closed(result_ptr)) {
-          this.close_callback();
-          return;
+          _free(data_ptr);
+          _free(result_ptr);
+          this.cleanup();
+          return returned_data;
         }
         let data_size = _get_result_size(result_ptr);
         let data_heap = Module.HEAPU8.subarray(data_ptr, data_ptr + data_size);
@@ -5253,109 +5433,135 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
           let full_data = merge_arrays(this.recv_buffer);
           let is_text = _get_result_is_text(result_ptr);
           this.recv_buffer = [];
-          this.recv_callback(full_data, is_text);
+          if (is_text) {
+            returned_data = new TextDecoder().decode(full_data);
+          } else {
+            returned_data = full_data;
+          }
         }
-      }
-      if (result_code == 52) {
-        this.close_callback();
+      } else if (result_code === 0 && result_closed) {
+        this.cleanup();
+      } else if (result_code !== 81) {
+        this.cleanup(result_code);
       }
       _free(data_ptr);
       _free(result_ptr);
+      return returned_data;
     }
-    recv_loop() {
-      this.event_loop = setInterval(() => {
-        this.recv();
-      }, 1);
-    }
-    recv_callback(data, is_text = false) {
-      let converted;
-      if (is_text) {
-        converted = new TextDecoder().decode(data);
-      } else {
-        if (this.binaryType == "blob") {
-          converted = new Blob(data);
-        } else if (this.binaryType == "arraybuffer") {
-          converted = data.buffer;
-        } else {
-          throw "invalid binaryType string";
-        }
-      }
-      let msg_event = new MessageEvent("message", { data: converted });
-      this.onmessage(msg_event);
-      this.dispatchEvent(msg_event);
-    }
-    close_callback(error = false) {
-      if (this.status == this.CLOSED)
+    cleanup(error = 0) {
+      if (this.http_handle)
+        _cleanup_handle(this.http_handle);
+      else
         return;
-      this.status = this.CLOSED;
       clearInterval(this.event_loop);
-      _cleanup_websocket();
+      this.connected = false;
       if (error) {
-        let error_event = new Event("error");
-        this.dispatchEvent(error_event);
-        this.onerror(error_event);
+        this.onerror(error);
       } else {
-        let close_event = new CloseEvent("close");
-        this.dispatchEvent(close_event);
-        this.onclose(close_event);
+        this.onclose();
       }
-    }
-    finish_callback(error, response_info) {
-      this.status = this.OPEN;
-      if (error != 0)
-        this.close_callback(true);
-      let open_event = new Event("open");
-      this.onopen(open_event);
-      this.dispatchEvent(open_event);
     }
     send(data) {
-      let is_text = false;
-      if (this.status === this.CONNECTING) {
-        throw new DOMException("ws not ready yet");
-      }
-      if (this.status === this.CLOSED) {
+      let is_text = typeof data === "string";
+      if (!this.connected)
         return;
+      if (is_text) {
+        data = new TextEncoder().encode(data);
       }
-      let data_array;
-      if (typeof data === "string") {
-        data_array = new TextEncoder().encode(data);
-        is_text = true;
-      } else if (data instanceof Blob) {
-        data.arrayBuffer().then((array_buffer) => {
-          data_array = new Uint8Array(array_buffer);
-          this.send(data_array);
-        });
-        return;
-      } else if (data instanceof ArrayBuffer) {
-        if (ArrayBuffer.isView(data) && data instanceof DataView) {
-          data_array = new Uint8Array(data.buffer);
-        } else {
-          data_array = new Uint8Array(data);
-        }
-      } else if (ArrayBuffer.isView(data)) {
-        data_array = Uint8Array.from(data);
-      } else {
-        throw "invalid data type to be sent";
-      }
-      let data_ptr = allocate_array(data_array);
+      let data_ptr = allocate_array(data);
       let data_len = data.length;
       _send_to_websocket(this.http_handle, data_ptr, data_len, is_text);
       _free(data_ptr);
     }
     close() {
-      _close_websocket(this.http_handle);
+      this.cleanup();
     }
-    get readyState() {
-      return this.status;
+  }
+  class TLSSocket {
+    constructor(hostname, port, options = {}) {
+      check_loaded(true);
+      this.hostname = hostname;
+      this.port = port;
+      this.url = `https://${hostname}:${port}`;
+      this.options = options;
+      this.onopen = () => {
+      };
+      this.onerror = () => {
+      };
+      this.onmessage = () => {
+      };
+      this.onclose = () => {
+      };
+      this.connected = false;
+      this.event_loop = null;
+      this.connect();
     }
-    get bufferedAmount() {
-      return 0;
+    connect() {
+      let data_callback = () => {
+      };
+      let finish_callback = (error, response_info) => {
+        if (error === 0) {
+          this.connected = true;
+          this.event_loop = setInterval(() => {
+            let data = this.recv();
+            if (data != null)
+              this.onmessage(data);
+          }, 0);
+          this.onopen();
+        } else {
+          this.cleanup(error);
+        }
+      };
+      let request_options = {
+        _connect_only: 1
+      };
+      if (this.options.verbose) {
+        request_options._libcurl_verbose = 1;
+      }
+      this.http_handle = perform_request(this.url, request_options, data_callback, finish_callback, null);
     }
-    get protocol() {
-      return "";
+    recv() {
+      let buffer_size = 64 * 1024;
+      let result_ptr = _recv_from_socket(this.http_handle, buffer_size);
+      let data_ptr = _get_result_buffer(result_ptr);
+      let result_code = _get_result_code(result_ptr);
+      let result_closed = _get_result_closed(result_ptr);
+      if (result_code === 0 && !result_closed) {
+        let data_size = _get_result_size(result_ptr);
+        let data_heap = Module.HEAPU8.subarray(data_ptr, data_ptr + data_size);
+        let data = new Uint8Array(data_heap);
+        this.onmessage(data);
+      } else if (result_code === 0 && result_closed) {
+        this.cleanup();
+      } else if (result_code != 81) {
+        this.cleanup(result_code);
+      }
+      _free(data_ptr);
+      _free(result_ptr);
     }
-    get extensions() {
-      return "";
+    send(data_array) {
+      if (!this.connected)
+        return;
+      let data_ptr = allocate_array(data_array);
+      let data_len = data_array.length;
+      _send_to_socket(this.http_handle, data_ptr, data_len);
+      _free(data_ptr);
+    }
+    cleanup(error = false) {
+      if (this.http_handle)
+        _cleanup_handle(this.http_handle);
+      else
+        return;
+      clearInterval(this.event_loop);
+      this.connected = false;
+      if (error) {
+        this.onerror(error);
+      } else {
+        this.onclose();
+      }
+    }
+    close() {
+      this.cleanup();
     }
   }
   const status_messages = {
@@ -5723,12 +5929,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
       return this.CLOSED;
     }
   }
+  const copyright_notice = `ading2210/libcurl.js - A port of libcurl to WASM for use in the browser.
+Copyright (C) 2023 ading2210
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
   var websocket_url = null;
   var event_loop = null;
   var active_requests = 0;
   var wasm_ready = false;
   var version_dict = null;
-  const libcurl_version = "0.3.8";
+  var api = null;
+  const libcurl_version = "0.4.1";
   function check_loaded(check_websocket) {
     if (!wasm_ready) {
       throw new Error("wasm not loaded yet, please call libcurl.load_wasm first");
@@ -5736,38 +5958,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
     if (!websocket_url && check_websocket) {
       throw new Error("websocket proxy url not set, please call libcurl.set_websocket");
     }
-  }
-  class HeadersDict {
-    constructor(obj) {
-      for (let key in obj) {
-        this[key] = obj[key];
-      }
-      return new Proxy(this, this);
-    }
-    get(target, prop) {
-      let keys = Object.keys(this);
-      for (let key of keys) {
-        if (key.toLowerCase() === prop.toLowerCase()) {
-          return this[key];
-        }
-      }
-    }
-    set(target, prop, value) {
-      let keys = Object.keys(this);
-      for (let key of keys) {
-        if (key.toLowerCase() === prop.toLowerCase()) {
-          this[key] = value;
-        }
-      }
-      this[prop] = value;
-      return true;
-    }
-  }
-  function allocate_str(str) {
-    return allocate(intArrayFromString(str), ALLOC_NORMAL);
-  }
-  function allocate_array(array) {
-    return allocate(array, ALLOC_NORMAL);
   }
   function perform_request(url, params, js_data_callback, js_end_callback, body = null) {
     let params_str = JSON.stringify(params);
@@ -5790,8 +5980,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
         _free(body_ptr);
       _free(url_ptr);
       _free(response_json_ptr);
-      if (error != 0)
-        console.error("request failed with error code " + error);
       active_requests--;
       js_end_callback(error, response_info);
     };
@@ -5856,36 +6044,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
     }
     return response_obj;
   }
-  async function parse_body(data) {
-    let data_array = null;
-    if (typeof data === "string") {
-      data_array = new TextEncoder().encode(data);
-    } else if (data instanceof Blob) {
-      let array_buffer = await data.arrayBuffer();
-      data_array = new Uint8Array(array_buffer);
-    } else if (data instanceof ArrayBuffer) {
-      if (ArrayBuffer.isView(data) && data instanceof DataView) {
-        data_array = new Uint8Array(data.buffer);
-      } else if (ArrayBuffer.isView(data)) {
-        data_array = Uint8Array.from(data);
-      } else {
-        data_array = new Uint8Array(data);
-      }
-    } else if (data instanceof ReadableStream) {
-      let chunks = [];
-      for await (let chunk of data) {
-        chunks.push(chunk);
-      }
-      data_array = merge_arrays(chunks);
-    } else {
-      throw "invalid data type to be sent";
-    }
-    return data_array;
-  }
   async function create_options(params) {
     let body = null;
     if (params.body) {
-      body = await parse_body(params.body);
+      body = await data_to_array(params.body);
       params.body = true;
     }
     if (!params.headers)
@@ -5907,7 +6069,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
       };
       let finish_callback = (error, response_info) => {
         if (error != 0) {
-          reject("libcurl.js encountered an error: " + error);
+          let error_str = `Request failed with error code ${error}: ${get_error_str(error)}`;
+          if (error != 0)
+            error_msg(error_str);
+          reject(error_str);
           return;
         }
         let response_data = merge_arrays(chunks);
@@ -5925,12 +6090,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
   }
   function set_websocket_url(url) {
     websocket_url = url;
-    if (!Module.websocket) {
-      document.addEventListener("libcurl_load", () => {
-        set_websocket_url(url);
-      });
-    } else
+    if (Module.websocket) {
       Module.websocket.url = url;
+    }
   }
   function get_version() {
     if (!wasm_ready)
@@ -5944,12 +6106,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
     version_dict.lib = libcurl_version;
     return version_dict;
   }
+  function get_cacert() {
+    return UTF8ToString(_get_cacert());
+  }
   function main() {
     wasm_ready = true;
     _init_curl();
     set_websocket_url(websocket_url);
-    let load_event = new Event("libcurl_load");
-    document.dispatchEvent(load_event);
+    if (ENVIRONMENT_IS_WEB) {
+      let load_event = new Event("libcurl_load");
+      document.dispatchEvent(load_event);
+    }
+    api.onload();
   }
   function load_wasm(url) {
     wasmBinaryFile = url;
@@ -5957,13 +6125,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
     run();
   }
   Module.onRuntimeInitialized = main;
-  return {
+  api = {
     fetch: libcurl_fetch,
     set_websocket: set_websocket_url,
     load_wasm,
-    WebSocket: CurlWebSocket,
+    WebSocket: FakeWebSocket,
+    CurlWebSocket,
+    TLSSocket,
+    get_cacert,
     wisp_connections: _wisp_connections,
     WispConnection,
+    transport: "wisp",
     get copyright() {
       return copyright_notice;
     },
@@ -5972,6 +6144,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
     },
     get ready() {
       return wasm_ready;
+    },
+    get websocket_url() {
+      return websocket_url;
     },
     get stdout() {
       return out;
@@ -5984,8 +6159,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
     },
     set stderr(callback) {
       err = callback;
+    },
+    get logger() {
+      return logger;
+    },
+    set logger(func) {
+      logger = func;
+    },
+    onload() {
     }
   };
+  return api;
 }();
 
 // src/main.ts
@@ -6022,7 +6206,6 @@ var LibcurlClient = class {
         respheaders[key].push(value);
       }
     }
-    console.log(remote.href, respheaders);
     return {
       body: payload.body,
       headers: respheaders,
