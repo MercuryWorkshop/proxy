@@ -31,8 +31,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       libcurl.js:
-        specifier: ^0.3.9
-        version: 0.3.9
+        specifier: ^0.4.0
+        version: 0.4.0
       rollup:
         specifier: ^4.12.0
         version: 4.12.0
@@ -2407,8 +2407,8 @@ packages:
       type-check: 0.4.0
     dev: true
 
-  /libcurl.js@0.3.9:
-    resolution: {integrity: sha512-B3EMs9HnPPdLqVvpfxFtdoiPfN2ukGnFWkcyJ6g+4Res3NfFrYrrCE+1p8eAeGxqY/EjnOLYFQqjOmKLufH62A==}
+  /libcurl.js@0.4.0:
+    resolution: {integrity: sha512-ZWJBbPiwL08a7THwlMzuOLcY+E33F37Qy7i8RTE+Q9aM0nfiH9dia/7/rAlzXFr7ogeSabwSwBF5EufSpi7XGw==}
     dev: false
 
   /loader-runner@4.3.0:
