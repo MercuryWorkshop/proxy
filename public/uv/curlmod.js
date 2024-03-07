@@ -5847,8 +5847,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
       writable: false,
       value: new Headers()
     });
-    for (let header_name in response_info.headers) {
-      let header_value = response_info.headers[header_name];
+    Object.defineProperty(response_obj, "raw_headers", {
+      writable: false,
+      value: response_info.headers
+    });
+    for (let [header_name, header_value] of response_info.headers) {
       response_obj.headers.append(header_name, header_value);
     }
     return response_obj;
@@ -6012,9 +6015,14 @@ var LibcurlClient = class {
       redirect: "manual"
     });
     let respheaders = {};
-    for (const [key, value] of [...payload.headers]) {
-      respheaders[key] = value;
+    for (let [key, value] of payload.raw_headers) {
+      if (!respheaders[key]) {
+        respheaders[key] = [value];
+      } else {
+        respheaders[key].push(value);
+      }
     }
+    console.log(remote.href, respheaders);
     return {
       body: payload.body,
       headers: respheaders,
