@@ -6175,11 +6175,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.`;
 // src/main.ts
 var LibcurlClient = class {
   wisp;
-  constructor({ wisp }) {
-    this.wisp = wisp;
+  wasm_url;
+  constructor(options) {
+    this.wisp = options.wisp;
+    this.wasm_url = options.wasm || "libcurl.wasm";
   }
   async init() {
-    libcurl.load_wasm("libcurl.wasm");
+    libcurl.load_wasm(this.wasm_url);
     await new Promise((resolve, reject) => {
       libcurl.onload = () => {
         libcurl.set_websocket(this.wisp);

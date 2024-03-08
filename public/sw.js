@@ -23,6 +23,7 @@ importScripts(__uv$config.sw || 'uv/uv.sw.js');
 const sw = new UVServiceWorker();
 
 self.addEventListener('fetch', (event) => {
+    console.log(event);
     event.respondWith(
         (async function() {
             if (event.request.url.startsWith(location.origin + "/uvsw/")) {
