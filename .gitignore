@@ -1,3 +1,6 @@
+/public/uv
+/public/libcurl.wasm
+
 # Logs
 logs
 *.log

@@ -7,7 +7,7 @@
  */
 
 self.filemap = {};
-importScripts('uv/bare.js');
+//importScripts('uv/bare.js');
 
 // import modules
 importScripts('uv/baremod.js');
@@ -23,7 +23,6 @@ importScripts(__uv$config.sw || 'uv/uv.sw.js');
 const sw = new UVServiceWorker();
 
 self.addEventListener('fetch', (event) => {
-    console.log(event);
     event.respondWith(
         (async function() {
             if (event.request.url.startsWith(location.origin + "/uvsw/")) {
