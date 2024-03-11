@@ -31,8 +31,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       libcurl.js:
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: ^0.5.2
+        version: 0.5.2
       rollup:
         specifier: ^4.12.0
         version: 4.12.0
@@ -56,8 +56,8 @@ importers:
   EpoxyTransport:
     dependencies:
       '@mercuryworkshop/epoxy-tls':
-        specifier: ^1.1.1
-        version: 1.1.1
+        specifier: ^1.4.1
+        version: 1.4.1
       esbuild-plugin-umd-wrapper:
         specifier: ^2.0.0
         version: 2.0.0
@@ -84,8 +84,8 @@ importers:
   Ultraviolet:
     dependencies:
       '@mercuryworkshop/bare-mux':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.5
+        version: link:../bare-mux
       crypto-js:
         specifier: ^4.2.0
         version: 4.2.0
@@ -756,15 +756,8 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@mercuryworkshop/bare-mux@1.0.0:
-    resolution: {integrity: sha512-eUK+e674o+sw96Pjxf27awY00x6UvoiJWQ8XaRbBCrxuPKYRDCFNUr6QFj4TUfgeuQs3qrAjaTqOA5CjAdRMQA==}
-    dependencies:
-      '@types/uuid': 9.0.8
-      uuid: 9.0.1
-    dev: false
-
-  /@mercuryworkshop/epoxy-tls@1.1.1:
-    resolution: {integrity: sha512-C+LnrgMmNkRxIbQUYKb8G6PapZF5MAgJdTyPluef6BFz+B7A2rvzWV7aO1f5IU3HSZJ6GlBBWuGxs5CkJVTvaQ==}
+  /@mercuryworkshop/epoxy-tls@1.4.1:
+    resolution: {integrity: sha512-g4vuP25F+RUz2l46y0WJ6mm9p7GDJEwEsgtQn5SzsXgnS1iKstE8bHAtqIfEf6njs4kRZs9Lxkj2UwHw2y+S7g==}
     dev: false
 
   /@nodelib/fs.scandir@2.1.5:
@@ -2414,8 +2407,8 @@ packages:
       type-check: 0.4.0
     dev: true
 
-  /libcurl.js@0.5.0:
-    resolution: {integrity: sha512-jzG6d05DjXXi862N/8gVyJbbbh5+9DtiuhqvbNhK4v0E9nhlG0Qs2y+ljBuDBA1reE2Lr4HzpLy/U28w49gCYQ==}
+  /libcurl.js@0.5.2:
+    resolution: {integrity: sha512-kj4Em8YYzx8Xl1wtXo04sGulQTqnxFkXsmtMDPqPZ8OIZCoyzilSQKMhmF2XVnoB0g+HK68A2v32b3lMPGCtfQ==}
     dev: false
 
   /loader-runner@4.3.0:

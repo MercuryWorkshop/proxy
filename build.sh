@@ -20,5 +20,5 @@ cp CurlTransport/node_modules/libcurl.js/libcurl.wasm public/libcurl.wasm
 cp CurlTransport/dist/index.cjs public/uv/curlmod.js
 cp EpoxyTransport/dist/index.js public/uv/epxmod.js
 cp bare-as-module3/dist/bare.cjs public/uv/baremod.js
-cp bare-mux/dist/* public/uv/
 cp Ultraviolet/dist/* public/uv/
+cp bare-mux/dist/* public/uv/
