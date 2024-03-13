@@ -3,7 +3,7 @@
 	url = https://github.com/MercuryWorkshop/EpoxyTransport
 [submodule "Ultraviolet"]
 	path = Ultraviolet
-	url = https://github.com/NebulaServices/Ultraviolet
+	url = https://github.com/titaniumnetwork-dev/Ultraviolet
 [submodule "bare-mux"]
 	path = bare-mux
 	url = https://github.com/MercuryWorkshop/bare-mux
