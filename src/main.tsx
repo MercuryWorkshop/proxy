@@ -81,7 +81,7 @@ const App: Component<{}, {
 
       <div class={[flex, "buttons"]}>
         <button on:click={() => SetTransport("BareMod.BareClient", store.bareurl)}>use bare server 3</button>
-        <button on:click={() => SetTransport("CurlMod.LibcurlClient", { wisp: store.wispurl, wasm: "/public/libcurl.wasm"})}>use libcurl.js</button>
+        <button on:click={() => SetTransport("CurlMod.LibcurlClient", { wisp: store.wispurl })}>use libcurl.js</button>
         <button on:click={() => SetTransport("EpxMod.EpoxyClient", { wisp: store.wispurl })}>use epoxy</button>
         <button on:click={() => SetSingletonTransport(new BareMod.BareClient(store.bareurl))}>use bare server 3 (remote)</button>
       </div>
