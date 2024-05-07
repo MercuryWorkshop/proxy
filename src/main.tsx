@@ -9,8 +9,8 @@ navigator.serviceWorker.register("/sw.js");
 
 let app: ThisParameterType<typeof App>;
 
-const flex = rule`display: flex;`;
-const col = rule`flex-direction: column;`;
+const flex = css`display: flex;`;
+const col = css`flex-direction: column;`;
 
 const store = $store({
   url: "https://google.com",
@@ -18,7 +18,6 @@ const store = $store({
   bareurl: "http://localhost:8080/bare/"
 }, "settings", "localstorage");
 const App: Component<{}, {
-
   urlencoded: string,
 }> = function() {
   app = this;
