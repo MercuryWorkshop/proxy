@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@mercuryworkshop/bare-mux": "workspace:*",
-    "dreamland": "^0.0.1"
+    "dreamland": "^0.0.17"
   },
   "exports": {
     "import": "./dist/main.js",

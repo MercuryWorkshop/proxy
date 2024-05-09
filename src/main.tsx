@@ -9,8 +9,6 @@ import "./index.css";
 
 navigator.serviceWorker.register("/sw.js");
 
-let app: ThisParameterType<typeof App>;
-
 const flex = css`
   display: flex;
 `;
@@ -23,19 +21,22 @@ const store = $store(
     url: "https://google.com",
     wispurl: "wss://wisp.mercurywork.shop/",
     bareurl: "http://localhost:8080/bare/",
-  },
-  "settings",
-  "localstorage"
-);
+  }, { ident: "settings", backing: "localstorage", autosave: "auto" });
 const App: Component<
   {},
   {
     urlencoded: string;
   }
 > = function () {
-  app = this;
   this.urlencoded = "";
-  this.css = css`
+  this.css = `
+    width: 100%;
+    height: 100%;
+    color: #e0def4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     input,
     button {
       font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
@@ -45,15 +46,6 @@ const App: Component<
       font-family: "Inter Tight", "Inter", system-ui, -apple-system, BlinkMacSystemFont,
       sans-serif;
       margin-bottom: 0;
-    }
-    self {
-      width: 100%;
-      height: 100%;
-      color: #e0def4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
     }
     iframe {
       border: 4px solid #313131;
