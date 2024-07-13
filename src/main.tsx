@@ -1,27 +1,18 @@
-import BareClient, {
-  SetSingletonTransport,
-  SetTransport,
-  registerRemoteListener,
-} from "@mercuryworkshop/bare-mux";
-//@ts-ignore
+import BareClient, { BareMuxConnection } from "@mercuryworkshop/bare-mux";
 import "dreamland";
 import "./index.css";
 
 navigator.serviceWorker.register("/sw.js");
 
-const flex = css`
-  display: flex;
-`;
-const col = css`
-  flex-direction: column;
-`;
+const connection = new BareMuxConnection("/baremux/worker.js")
+const flex = css`display: flex;`;
+const col = css`flex-direction: column;`;
 
-const store = $store(
-  {
+const store = $store({
     url: "https://google.com",
     wispurl: "wss://wisp.mercurywork.shop/",
-    bareurl: "http://localhost:8080/bare/",
-  }, { ident: "settings", backing: "localstorage", autosave: "auto" });
+    bareurl: (location.protocol === "https:" ? "https" : "http") + "://" + location.host + "/bare/",
+}, { ident: "settings", backing: "localstorage", autosave: "auto" });
 const App: Component<
   {},
   {
@@ -89,66 +80,34 @@ const App: Component<
   `;
   return (
     <div>
-      <h1>Percury Unblocker</h1>
-      <p>surf the unblocked and mostly buggy web</p>
-      <div class={[flex, col, "cfg"]}>
-        <input bind:value={use(store.wispurl)} />
-        <input bind:value={use(store.bareurl)} />
+    <h1>Percury Unblocker</h1>
+    <p>surf the unblocked and mostly buggy web</p>
 
-        <div class={[flex, "buttons"]}>
-          <button
-            on:click={() => SetTransport("BareMod.BareClient", store.bareurl)}
-          >
-            use bare server 3
-          </button>
-          <button
-            on:click={() =>
-              SetTransport("CurlMod.LibcurlClient", { wisp: store.wispurl })
-            }
-          >
-            use libcurl.js
-          </button>
-          <button
-            on:click={() =>
-              SetTransport("EpxMod.EpoxyClient", { wisp: store.wispurl })
-            }
-          >
-            use epoxy
-          </button>
-          <button
-            on:click={() =>
-              SetSingletonTransport(new BareMod.BareClient(store.bareurl))
-            }
-          >
-            use bare server 3 (remote)
-          </button>
-        </div>
+    <div class={[flex, col, "cfg"]}>
+      <input bind:value={use(store.wispurl)}></input>
+      <input bind:value={use(store.bareurl)}></input>
+
+
+      <div class={[flex, "buttons"]}>
+        <button on:click={() => connection.setTransport("/uv/baremod.js", [store.bareurl])}>use bare server 3</button>
+        <button on:click={() => connection.setTransport("/uv/curlmod.js", [{ wisp: store.wispurl }])}>use libcurl.js</button>
+        <button on:click={() => connection.setTransport("/uv/epxmod.js", [{ wisp: store.wispurl }])}>use epoxy</button>
+        <button on:click={() => window.open(this.urlencoded)}>open in fullscreen</button>
       </div>
-      <br></br>
-      <input
-        class="bar"
-        bind:value={use(store.url)}
-        on:input={(e: any) => (store.url = e.target.value)}
-        on:keyup={(e: any) =>
-          e.keyCode == 13 &&
-          console.log(
-            (this.urlencoded =
-              "/uvsw/" + Ultraviolet.codec.xor.encode(store.url))
-          )
-        }
-      />
-      <iframe src={use(this.urlencoded)}></iframe>
     </div>
+    <input class="bar" bind:value={use(store.url)} on:input={(e) => (store.url = e.target.value)} on:keyup={(e: any) => e.keyCode == 13 && console.log(this.urlencoded = __uv$config.prefix + __uv$config.encodeUrl(e.target.value))}></input>
+    <iframe src={use(this.urlencoded)}></iframe>
+  </div>
   );
 };
 
 declare var CurlMod: any;
 declare var EpxMod: any;
 declare var BareMod: any;
+declare var __uv$config: any;
 declare var Ultraviolet: any;
 
 (async () => {
-  registerRemoteListener(navigator.serviceWorker.controller!);
   document.querySelector("#app")?.appendChild(<App />);
 })();
 

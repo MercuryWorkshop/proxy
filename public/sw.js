@@ -7,25 +7,16 @@
  */
 
 self.filemap = {};
-//importScripts('uv/bare.js');
-
-// import modules
-importScripts('uv/baremod.js');
-importScripts('uv/epxmod.js');
-importScripts('uv/curlmod.js');
-
 importScripts('uv/uv.bundle.js');
 importScripts('/uv.config.js');
 importScripts(__uv$config.sw || 'uv/uv.sw.js');
 
-
-
-const sw = new UVServiceWorker();
+const uv = new UVServiceWorker();
 
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         (async function() {
-            if (event.request.url.startsWith(location.origin + "/uvsw/")) {
+            if (uv.route(event)) {
                 return await sw.fetch(event);
             }
             return await fetch(event.request)
