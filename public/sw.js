@@ -12,13 +12,14 @@ importScripts(__uv$config.sw || '/uv/uv.sw.js');
 
 const uv = new UVServiceWorker();
 
+async function handleRequest(event) {
+    if (uv.route(event)) {
+        return uv.fetch(event);
+    }
+    
+    return fetch(event.request)
+}
+
 self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        (async function() {
-            if (uv.route(event)) {
-                return await uv.fetch(event);
-            }
-            return await fetch(event.request)
-        })()
-    );
+    event.respondWith(handleRequest(event));
 });
