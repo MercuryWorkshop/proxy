@@ -6,10 +6,9 @@
  * However, if a user changes the location of uv.bundle.js/uv.config.js or sw.js is not relative to them, they will need to modify this script locally.
  */
 
-self.filemap = {};
-importScripts('uv/uv.bundle.js');
+importScripts('/uv/uv.bundle.js');
 importScripts('/uv.config.js');
-importScripts(__uv$config.sw || 'uv/uv.sw.js');
+importScripts(__uv$config.sw || '/uv/uv.sw.js');
 
 const uv = new UVServiceWorker();
 
@@ -17,7 +16,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
         (async function() {
             if (uv.route(event)) {
-                return await sw.fetch(event);
+                return await uv.fetch(event);
             }
             return await fetch(event.request)
         })()

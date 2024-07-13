@@ -2,8 +2,6 @@ import BareClient, { BareMuxConnection } from "@mercuryworkshop/bare-mux";
 import "dreamland";
 import "./index.css";
 
-navigator.serviceWorker.register("/sw.js");
-
 const connection = new BareMuxConnection("/baremux/worker.js")
 const flex = css`display: flex;`;
 const col = css`flex-direction: column;`;
@@ -95,7 +93,7 @@ const App: Component<
         <button on:click={() => window.open(this.urlencoded)}>open in fullscreen</button>
       </div>
     </div>
-    <input class="bar" bind:value={use(store.url)} on:input={(e) => (store.url = e.target.value)} on:keyup={(e: any) => e.keyCode == 13 && console.log(this.urlencoded = __uv$config.prefix + __uv$config.encodeUrl(e.target.value))}></input>
+    <input class="bar" bind:value={use(store.url)} on:input={(e: any) => (store.url = e.target.value)} on:keyup={(e: any) => e.keyCode == 13 && console.log(this.urlencoded = __uv$config.prefix + __uv$config.encodeUrl(e.target.value))}></input>
     <iframe src={use(this.urlencoded)}></iframe>
   </div>
   );
@@ -108,6 +106,7 @@ declare var __uv$config: any;
 declare var Ultraviolet: any;
 
 (async () => {
+  await navigator.serviceWorker.register("/sw.js");
   document.querySelector("#app")?.appendChild(<App />);
 })();
 
