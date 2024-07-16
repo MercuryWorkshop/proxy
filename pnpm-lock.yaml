@@ -84,8 +84,8 @@ importers:
   Ultraviolet:
     devDependencies:
       '@mercuryworkshop/bare-mux':
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^2.0.2
+        version: 2.0.2
       astring:
         specifier: ^1.8.6
         version: 1.8.6
@@ -729,6 +729,9 @@ packages:
 
   '@mercuryworkshop/bare-mux@2.0.1':
     resolution: {integrity: sha512-94YThllV9sWSb5hzIDg+U0JSNfFdkvOq6j5wwV1OON3izZhrKSsdDOkaywS5WP6HE/jm0/0ZYaYixbf8u3kjYg==}
+
+  '@mercuryworkshop/bare-mux@2.0.2':
+    resolution: {integrity: sha512-1rnqFfI29VXi3jrMbkotHV+NnafJ3tpTIuH3Ov/BtVAfZMNGcsCRr3dwEKRWc+mDb0tWdNWC0PnZghgfAlbr+A==}
 
   '@mercuryworkshop/epoxy-tls@2.0.6-1':
     resolution: {integrity: sha512-sirpgUiIO6gxjvoI+QDRebsWEgutHiMbV5ghx2Q39IkfGqYNFinaMIDZRno8yY4IZCxydf9KAo/V+1xEMwvJ+w==}
@@ -2183,6 +2186,8 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.4.15
 
   '@mercuryworkshop/bare-mux@2.0.1': {}
+
+  '@mercuryworkshop/bare-mux@2.0.2': {}
 
   '@mercuryworkshop/epoxy-tls@2.0.6-1': {}
 
