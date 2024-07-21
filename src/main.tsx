@@ -80,6 +80,8 @@ const App: Component<
       flex-grow: 1
     }
   `;
+  // Set default transport
+  connection.setTransport("/uv/epxmod.js", [{ wisp: store.wispurl }]);
   return (
     <div>
     <h1>Percury Unblocker</h1>

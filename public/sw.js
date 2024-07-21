@@ -10,6 +10,14 @@ importScripts('/uv/uv.bundle.js');
 importScripts('/uv.config.js');
 importScripts(__uv$config.sw || '/uv/uv.sw.js');
 
+self.__uv$config.inject = [{
+    host: "google.com",
+    html: `
+        <script id="uv-injected">console.log("Injected into uv!")</script>
+    `,
+    injectTo: "head",
+}];
+
 const uv = new UVServiceWorker();
 
 async function handleRequest(event) {
