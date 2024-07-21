@@ -117,11 +117,11 @@ const App: Component<
   );
 };
 
-declare var CurlMod: any;
-declare var EpxMod: any;
-declare var BareMod: any;
+// declare var CurlMod: any;
+// declare var EpxMod: any;
+// declare var BareMod: any;
+// declare var Ultraviolet: any;
 declare var __uv$config: any;
-declare var Ultraviolet: any;
 
 (async () => {
   await navigator.serviceWorker.register("/sw.js");
