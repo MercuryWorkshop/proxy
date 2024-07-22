@@ -11,9 +11,11 @@ importScripts('/uv.config.js');
 importScripts(__uv$config.sw || '/uv/uv.sw.js');
 
 // Fetch vencord and store the text in a variable
-self.vencordtext = "";
+self.vencordjs = "";
+self.vencordcss = "";
 async function loadVC() {
-    self.vencordtext = await fetch("https://raw.githubusercontent.com/Vencord/builds/main/browser.js").then(response => response.text());
+    self.vencordjs = await fetch("https://raw.githubusercontent.com/Vencord/builds/main/browser.js").then(response => response.text());
+    self.vencordcss = await fetch("https://raw.githubusercontent.com/Vencord/builds/main/browser.css").then(response => response.text());
     self.__uv$config.inject = [{
         host: "google.com",
         html: `<script>
@@ -24,8 +26,8 @@ async function loadVC() {
     {
         host: "discord.com",
         html: `
-            <script>${vencordtext}</script>
-            <link rel="stylesheet" href="https://raw.githubusercontent.com/Vencord/builds/main/browser.css"></link>
+            <script>${vencordjs}</script>
+            <style>${vencordcss}</style>
         `,
         injectTo: "head"
     }];
