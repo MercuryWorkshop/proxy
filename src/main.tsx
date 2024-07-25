@@ -90,36 +90,36 @@ const App: Component<
 	return (
 		<div>
 			<div class="window">
-			<h1>Percury Unblocker</h1>
-			<p>surf the unblocked and mostly buggy web</p>
+				<h1>Percury Unblocker</h1>
+				<p>surf the unblocked and mostly buggy web</p>
 
-			<div class={[flex, col, "cfg"]}>
-				<div class={[flex, "input_row"]}>
-					<label for="wisp_url_input">Wisp URL:</label>
-					<input id="wisp_url_input" bind:value={use(store.wispurl)}></input>
-				</div>
-				<div class={[flex, "input_row"]}>
-					<label for="bare_url_input">Bare URL:</label>
-					<input id="bare_url_input" bind:value={use(store.bareurl)}></input>
-				</div>
-				<div class={[flex, "input_row"]}>
-					<label for="proxy_url_input">SOCKS/HTTP Proxy URL:</label>
-					<input id="proxy_url_input" bind:value={use(store.proxy)}></input>
-				</div>
+				<div class={[flex, col, "cfg"]}>
+					<div class={[flex, "input_row"]}>
+						<label for="wisp_url_input">Wisp URL:</label>
+						<input id="wisp_url_input" bind:value={use(store.wispurl)}></input>
+					</div>
+					<div class={[flex, "input_row"]}>
+						<label for="bare_url_input">Bare URL:</label>
+						<input id="bare_url_input" bind:value={use(store.bareurl)}></input>
+					</div>
+					<div class={[flex, "input_row"]}>
+						<label for="proxy_url_input">SOCKS/HTTP Proxy URL:</label>
+						<input id="proxy_url_input" bind:value={use(store.proxy)}></input>
+					</div>
 
-				<div class={[flex, "buttons"]}>
-					<button on:click={() => connection.setTransport("/uv/baremod.js", [store.bareurl])}>use bare server 3</button>
-					<button on:click={() => connection.setTransport("/uv/curlmod.js", [{
-						wisp: store.wispurl,
-						proxy: store.proxy ? store.proxy : undefined
-					}])}>use libcurl.js</button>
-					<button on:click={() => connection.setTransport("/uv/epxmod.js", [{ wisp: store.wispurl }])}>use epoxy</button>
-					<button on:click={() => window.open(this.urlencoded)}>open in fullscreen</button>
+					<div class={[flex, "buttons"]}>
+						<button on:click={() => connection.setTransport("/uv/baremod.js", [store.bareurl])}>use bare server 3</button>
+						<button on:click={() => connection.setTransport("/uv/curlmod.js", [{
+							wisp: store.wispurl,
+							proxy: store.proxy ? store.proxy : undefined
+						}])}>use libcurl.js</button>
+						<button on:click={() => connection.setTransport("/uv/epxmod.js", [{ wisp: store.wispurl }])}>use epoxy</button>
+						<button on:click={() => window.open(this.urlencoded)}>open in fullscreen</button>
+					</div>
 				</div>
 			</div>
-			</div>
-			<input class="bar" bind:value={use(store.url)} on:input={(e: any) => (store.url = e.target.value)} on:keyup={(e: any) => e.keyCode == 13 && console.log(this.urlencoded = __uv$config.prefix + __uv$config.encodeUrl(e.target.value))}></input>
-			<iframe class="window" src={use(this.urlencoded)}></iframe>
+			<input aria-label="search for fortnite here" class="bar" bind:value={use(store.url)} on:input={(e: any) => (store.url = e.target.value)} on:keyup={(e: any) => e.keyCode == 13 && console.log(this.urlencoded = __uv$config.prefix + __uv$config.encodeUrl(e.target.value))}></input>
+			<iframe class="window" src={use(this.urlencoded)} title="fortnite browser"></iframe>
 		</div>
 	);
 };
