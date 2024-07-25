@@ -7,19 +7,19 @@ const flex = css`display: flex;`;
 const col = css`flex-direction: column;`;
 
 const store = $store({
-    url: "https://google.com",
-    wispurl: "wss://wisp.mercurywork.shop/",
-    bareurl: (location.protocol === "https:" ? "https" : "http") + "://" + location.host + "/bare/",
-    proxy: ""
+	url: "https://google.com",
+	wispurl: "wss://wisp.mercurywork.shop/",
+	bareurl: (location.protocol === "https:" ? "https" : "http") + "://" + location.host + "/bare/",
+	proxy: ""
 }, { ident: "settings", backing: "localstorage", autosave: "auto" });
 const App: Component<
-  {},
-  {
-    urlencoded: string;
-  }
-> = function () {
-  this.urlencoded = "";
-  this.css = `
+	{},
+	{
+		urlencoded: string;
+	}
+> = function() {
+	this.urlencoded = "";
+	this.css = `
     width: 100%;
     height: 100%;
     color: #e0def4;
@@ -37,12 +37,17 @@ const App: Component<
       sans-serif;
       margin-bottom: 0;
     }
-    iframe {
-      border: 4px solid #313131;
-      background-color: #12121299;
+	.window {
+	  display: flex;
+	  flex-direction: column;
+	  align-items: center;
+	  border: 4px solid #313131;
+      background-color: #121212BB;
       border-radius: 1rem;
       margin: 2em;
       margin-top: 0.5em;
+	}
+    iframe {
       width: calc(100% - 4em);
       height: calc(100% - 8em);
     }
@@ -80,41 +85,43 @@ const App: Component<
       flex-grow: 1
     }
   `;
-  // Set default transport
-  connection.setTransport("/uv/epxmod.js", [{ wisp: store.wispurl }]);
-  return (
-    <div>
-    <h1>Percury Unblocker</h1>
-    <p>surf the unblocked and mostly buggy web</p>
+	// Set default transport
+	connection.setTransport("/uv/epxmod.js", [{ wisp: store.wispurl }]);
+	return (
+		<div>
+			<div class="window">
+			<h1>Percury Unblocker</h1>
+			<p>surf the unblocked and mostly buggy web</p>
 
-    <div class={[flex, col, "cfg"]}>
-      <div class={[flex, "input_row"]}>
-        <label for="wisp_url_input">Wisp URL:</label>
-        <input id="wisp_url_input" bind:value={use(store.wispurl)}></input>
-      </div>
-      <div class={[flex, "input_row"]}>
-        <label for="bare_url_input">Bare URL:</label>
-        <input id="bare_url_input" bind:value={use(store.bareurl)}></input>
-      </div>
-      <div class={[flex, "input_row"]}>
-        <label for="proxy_url_input">SOCKS/HTTP Proxy URL:</label>
-        <input id="proxy_url_input" bind:value={use(store.proxy)}></input>
-      </div>
+			<div class={[flex, col, "cfg"]}>
+				<div class={[flex, "input_row"]}>
+					<label for="wisp_url_input">Wisp URL:</label>
+					<input id="wisp_url_input" bind:value={use(store.wispurl)}></input>
+				</div>
+				<div class={[flex, "input_row"]}>
+					<label for="bare_url_input">Bare URL:</label>
+					<input id="bare_url_input" bind:value={use(store.bareurl)}></input>
+				</div>
+				<div class={[flex, "input_row"]}>
+					<label for="proxy_url_input">SOCKS/HTTP Proxy URL:</label>
+					<input id="proxy_url_input" bind:value={use(store.proxy)}></input>
+				</div>
 
-      <div class={[flex, "buttons"]}>
-        <button on:click={() => connection.setTransport("/uv/baremod.js", [store.bareurl])}>use bare server 3</button>
-        <button on:click={() => connection.setTransport("/uv/curlmod.js", [{
-          wisp: store.wispurl, 
-          proxy: store.proxy ? store.proxy : undefined
-        }])}>use libcurl.js</button>
-        <button on:click={() => connection.setTransport("/uv/epxmod.js", [{ wisp: store.wispurl }])}>use epoxy</button>
-        <button on:click={() => window.open(this.urlencoded)}>open in fullscreen</button>
-      </div>
-    </div>
-    <input class="bar" bind:value={use(store.url)} on:input={(e: any) => (store.url = e.target.value)} on:keyup={(e: any) => e.keyCode == 13 && console.log(this.urlencoded = __uv$config.prefix + __uv$config.encodeUrl(e.target.value))}></input>
-    <iframe src={use(this.urlencoded)}></iframe>
-  </div>
-  );
+				<div class={[flex, "buttons"]}>
+					<button on:click={() => connection.setTransport("/uv/baremod.js", [store.bareurl])}>use bare server 3</button>
+					<button on:click={() => connection.setTransport("/uv/curlmod.js", [{
+						wisp: store.wispurl,
+						proxy: store.proxy ? store.proxy : undefined
+					}])}>use libcurl.js</button>
+					<button on:click={() => connection.setTransport("/uv/epxmod.js", [{ wisp: store.wispurl }])}>use epoxy</button>
+					<button on:click={() => window.open(this.urlencoded)}>open in fullscreen</button>
+				</div>
+			</div>
+			</div>
+			<input class="bar" bind:value={use(store.url)} on:input={(e: any) => (store.url = e.target.value)} on:keyup={(e: any) => e.keyCode == 13 && console.log(this.urlencoded = __uv$config.prefix + __uv$config.encodeUrl(e.target.value))}></input>
+			<iframe class="window" src={use(this.urlencoded)}></iframe>
+		</div>
+	);
 };
 
 // declare var CurlMod: any;
@@ -124,8 +131,8 @@ const App: Component<
 declare var __uv$config: any;
 
 (async () => {
-  await navigator.serviceWorker.register("/sw.js");
-  document.querySelector("#app")?.appendChild(<App />);
+	await navigator.serviceWorker.register("/sw.js");
+	document.querySelector("#app")?.appendChild(<App />);
 })();
 
 (window as any).b = BareClient;
