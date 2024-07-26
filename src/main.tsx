@@ -131,8 +131,12 @@ const App: Component<
 declare var __uv$config: any;
 
 (async () => {
-	await navigator.serviceWorker.register("/sw.js");
-	document.querySelector("#app")?.appendChild(<App />);
+	try {
+		await navigator.serviceWorker.register("/sw.js");
+		document.querySelector("#app")?.appendChild(<App />);
+	} catch (err) {
+		document.querySelector("#app")?.appendChild(document.createTextNode(String(err)));
+	}
 })();
 
 (window as any).b = BareClient;
