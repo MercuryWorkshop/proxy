@@ -10,31 +10,6 @@ importScripts('/uv/uv.bundle.js');
 importScripts('/uv.config.js');
 importScripts(__uv$config.sw || '/uv/uv.sw.js');
 
-self.__uv$config.inject = [
-    {
-    host: "google.com",
-    html: `
-        <script id="uv-injected">console.log("Injected into uv!")</script>
-    `,
-    injectTo: "head",
-    },
-    {
-        host: "discord.com",
-        html: `<script>
-                async function applyCSS() {
-                    let vencordCSS = await fetch("https://raw.githubusercontent.com/Vencord/builds/main/browser.css")
-                    let cssLink = document.createElement("style");
-                    
-                    cssLink.innerHTML = await vencordCSS.text();
-                    document.head.appendChild(cssLink)
-                }
-                applyCSS();
-                </script>
-                <script src="https://raw.githubusercontent.com/Vencord/builds/main/browser.js"></script>`,
-        injectTo: "head"
-    }
-];
-
 const uv = new UVServiceWorker();
 
 async function handleRequest(event) {
