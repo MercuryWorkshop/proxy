@@ -16,9 +16,13 @@ for subdir in $submodules; do
 done
 
 mkdir -p public/uv
-mkdir -p public/baremux
-cp CurlTransport/dist/index.mjs public/uv/curlmod.js
-cp EpoxyTransport/dist/index.mjs public/uv/epxmod.js
-cp bare-as-module3/dist/index.mjs public/uv/baremod.js
 cp Ultraviolet/dist/* public/uv/
+mkdir -p public/baremux
 cp bare-mux/dist/* public/baremux/
+
+mkdir -p public/epoxy
+cp EpoxyTransport/dist/index.mjs public/epoxy/index.mjs
+mkdir -p public/libcurl
+cp CurlTransport/dist/index.mjs public/libcurl/index.mjs
+mkdir -p public/baremod
+cp bare-as-module3/dist/index.mjs public/baremod/index.js

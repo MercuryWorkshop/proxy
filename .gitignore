@@ -1,5 +1,8 @@
 /public/uv
 /public/baremux
+/public/epoxy
+/public/libcurl
+/public/baremod
 /public/libcurl.wasm
 
 # Logs
