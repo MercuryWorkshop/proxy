@@ -25,4 +25,4 @@ cp EpoxyTransport/dist/index.mjs public/epoxy/index.mjs
 mkdir -p public/libcurl
 cp CurlTransport/dist/index.mjs public/libcurl/index.mjs
 mkdir -p public/baremod
-cp bare-as-module3/dist/index.mjs public/baremod/index.js
+cp bare-as-module3/dist/index.mjs public/baremod/index.mjs
