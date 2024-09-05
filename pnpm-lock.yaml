@@ -75,7 +75,7 @@ importers:
   Ultraviolet:
     devDependencies:
       '@mercuryworkshop/bare-mux':
-        specifier: 2.0.8
+        specifier: ^2.0.8
         version: 2.0.8
       astring:
         specifier: ^1.8.6
