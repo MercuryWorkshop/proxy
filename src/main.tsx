@@ -98,7 +98,7 @@ const App: Component<
     }
   `;
   // Set default transport
-  connection.setTransport("/libcurl/index.mjs", [{ wisp: store.wispurl }]);
+  connection.setTransport("/epoxy/index.mjs", [{ wisp: store.wispurl }]);
   let frame = <iframe id="proxy-frame" src={use(this.urlencoded)}></iframe> as HTMLIFrameElement
   return (
     <div>
