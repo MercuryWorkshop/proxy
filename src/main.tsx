@@ -147,7 +147,9 @@ const App: Component<
 declare var __uv$config: any;
 
 (async () => {
-  await navigator.serviceWorker.register("/sw.js");
+  await navigator.serviceWorker.register("/sw.js").then((reg) => {
+    reg.update();
+  })
   document.querySelector("#app")?.appendChild(<App />);
 })();
 
