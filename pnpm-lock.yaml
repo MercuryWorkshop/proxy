@@ -64,19 +64,13 @@ importers:
         version: 3.0.0
 
   Ultraviolet:
-    devDependencies:
+    dependencies:
       '@mercuryworkshop/bare-mux':
         specifier: ^2.1.3
         version: 2.1.3
       astring:
         specifier: ^1.9.0
         version: 1.9.0
-      esbuild:
-        specifier: ^0.24.0
-        version: 0.24.0
-      eslint:
-        specifier: ^9.12.0
-        version: 9.12.0
       events:
         specifier: ^3.3.0
         version: 3.3.0
@@ -89,15 +83,22 @@ importers:
       parse5:
         specifier: ^7.2.0
         version: 7.2.0
+      set-cookie-parser:
+        specifier: ^2.7.0
+        version: 2.7.0
+    devDependencies:
+      esbuild:
+        specifier: ^0.24.0
+        version: 0.24.0
+      eslint:
+        specifier: ^9.12.0
+        version: 9.12.0
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
-      set-cookie-parser:
-        specifier: ^2.7.0
-        version: 2.7.0
 
   bare-as-module3:
     dependencies:

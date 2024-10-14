@@ -1,9 +1,25 @@
-body, html, #app {
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  width:100vw;
-  height:100vh;
+body,
+html,
+#app {
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  width: 100vw;
+  height: 100vh;
   margin: 0;
   padding: 0;
-  background-color:#121212;
+  background-color: #050505;
   overflow: hidden;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
