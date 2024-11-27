@@ -28,8 +28,8 @@ importers:
   CurlTransport:
     dependencies:
       libcurl.js:
-        specifier: ^0.6.19
-        version: 0.6.19
+        specifier: ^0.6.20
+        version: 0.6.20
     devDependencies:
       '@mercuryworkshop/bare-mux':
         specifier: ^2.1.6
@@ -1231,8 +1231,8 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
-  libcurl.js@0.6.19:
-    resolution: {integrity: sha512-YKoaG9NHWz6f7H/DcgP8UmnbDwjdHEOjID/ZudICQGUrawX2kFO3PernuJjBN1dXGc2d7RqnecQKnEcjdmi4xA==}
+  libcurl.js@0.6.20:
+    resolution: {integrity: sha512-tBXjza50/OJWnG9dYthlwBSY/OezR5r6R+lyG0kQzmIUhUxHvNXnngWUAJqzQjDZ+xhx17XVZz9b294FNCoJQg==}
 
   locate-path@5.0.0:
     resolution: {integrity: sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==}
@@ -2515,7 +2515,7 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  libcurl.js@0.6.19: {}
+  libcurl.js@0.6.20: {}
 
   locate-path@5.0.0:
     dependencies:
